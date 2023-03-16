@@ -26,6 +26,7 @@ const blogPostsSchema = new Schema(
         updatedAt: Date,
       },
     ],
+    likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

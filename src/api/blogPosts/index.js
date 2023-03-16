@@ -27,7 +27,8 @@ blogPostsRouter.get("/", async (req, res, next) => {
       .limit(mongoQuery.options.limit)
       .skip(mongoQuery.options.skip)
       .sort(mongoQuery.options.sort)
-      .populate({ path: "author" }); // add this line and refer to the schema path that you wanted to refer
+      .populate({ path: "author" })
+      .populate({ path: "likes" }); // add this line and refer to the schema path that you wanted to refer
     const total = await BlogPostsModel.countDocuments(mongoQuery.criteria);
     res.send({
       links: mongoQuery.links("http://localhost:3005/blogPosts", total),
@@ -42,7 +43,9 @@ blogPostsRouter.get("/", async (req, res, next) => {
 
 blogPostsRouter.get("/:blogPostsID", async (req, res, next) => {
   try {
-    const blogPost = await BlogPostsModel.findById(req.params.blogPostsID);
+    const blogPost = await BlogPostsModel.findById(req.params.blogPostsID)
+      .populate({ path: "author" })
+      .populate({ path: "likes" }); // add this line and refer to the schema path that you wanted to refer
     if (blogPost) {
       res.send(blogPost);
     } else {
