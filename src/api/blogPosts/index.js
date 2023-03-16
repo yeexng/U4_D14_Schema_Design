@@ -241,4 +241,56 @@ blogPostsRouter.delete(
   }
 );
 
+//likes
+blogPostsRouter.get("/:blogPostsID/likes", async (req, res, next) => {
+  try {
+    const blogPost = await BlogPostsModel.findById(
+      req.params.blogPostsID
+    ).populate({ path: "likes", select: "userName" });
+    if (blogPost) {
+      res.send(blogPost.likes);
+    } else {
+      next(
+        createHttpError(
+          404,
+          `BlogPost with id ${req.params.blogPostsID} not found!`
+        )
+      );
+    }
+    console.log(req.body);
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogPostsRouter.put("/:blogPostsID/likes", async (req, res, next) => {
+  try {
+    const blogPost = await BlogPostsModel.findById(req.params.blogPostsID);
+    if (!blogPost) {
+      return next(
+        createHttpError(
+          404,
+          `BlogPost with id ${req.params.blogPostsID} not found!`
+        )
+      );
+    }
+    const likes = blogPost.likes.toString();
+    console.log(likes);
+    if (!likes) {
+      return next(createHttpError(404, `Id with ${likes} not found!`));
+    }
+    if (blogPost.likes.includes(likes)) {
+      const unlikes = await BlogPostsModel.findOneAndUpdate(
+        { _id: req.params.blogPostsID },
+        { $pull: { likes: likes } },
+        { new: true, runValidators: true }
+      );
+      res.send({
+        likedBy: unlikes.likes,
+        length: unlikes.likes.length,
+      });
+    }
+  } catch (error) {}
+});
+
 export default blogPostsRouter;
