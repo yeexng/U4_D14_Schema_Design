@@ -8,6 +8,8 @@ import {
   notFoundHandler,
   genericErrorHandler,
 } from "./errorHandlers.js";
+import authorsRouter from "./api/authors/index.js";
+import usersRouter from "./api/users/index.js";
 
 const server = Express();
 const port = process.env.PORT || 3005;
@@ -34,6 +36,8 @@ server.use(
 server.use(Express.json());
 
 server.use("/blogPosts", blogPostsRouter);
+server.use("/authors", authorsRouter);
+server.use("/users", usersRouter);
 
 server.use(badRequestHandler);
 server.use(notFoundHandler);

@@ -4,17 +4,18 @@ const { Schema, model } = mongoose;
 
 const blogPostsSchema = new Schema(
   {
-    category: { type: String, required: true },
+    category: {
+      type: String,
+      required: true,
+      enum: ["scifi", "history", "romance", "action", "horror"],
+    },
     title: { type: String, required: true },
     cover: { type: String, required: true },
     readTime: {
       value: { type: Number, required: true },
       unit: { type: String, required: true },
     },
-    author: {
-      name: { type: String, required: true },
-      avatar: { type: String, required: true },
-    },
+    author: [{ type: Schema.Types.ObjectId, ref: "Author" }], //the ref must be the same with the Name of the model created
     content: { type: String, required: true },
     comments: [
       {
